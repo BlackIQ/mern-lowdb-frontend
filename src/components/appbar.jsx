@@ -53,29 +53,41 @@ const Navbar = () => {
     const [addLoading, setAddLoading] = useState(false);
 
     const addUser = () => {
-        const data = {
-            name,
-            surname,
-            age,
-            addr,
+        setNameError(false);
+        setSurnameError(false);
+        setAgeError(false);
+        setAddrError(false);
+
+        if (name !== '' && surname !== '' && age !== '' && addr !== '') {
+            const data = {
+                name,
+                surname,
+                age,
+                addr,
+            }
+
+            setAddLoading(true);
+
+            Axios.post(`${baseUrl}/api/users/add`, data)
+                .then((result) => {
+                    setName('');
+                    setSurname('');
+                    setAddr('');
+                    setAge('');
+
+                    setAddLoading(false);
+                    setOpenAddDialog(false);
+                    createSnack('User added', 'success');
+                })
+                .catch((error) => {
+                    console.log(error)
+                });
+        } else {
+            if (name === '') setNameError(true);
+            if (surname === '') setSurnameError(true);
+            if (age === '') setAgeError(true);
+            if (addr === '') setAddrError(true);
         }
-
-        setAddLoading(true);
-
-        Axios.post(`${baseUrl}/api/users/add`, data)
-            .then((result) => {
-                setName('');
-                setSurname('');
-                setAddr('');
-                setAge('');
-
-                setAddLoading(false);
-                setOpenAddDialog(false);
-                createSnack('User added', 'success');
-            })
-            .catch((error) => {
-                console.log(error)
-            });
     }
 
     return (
