@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import Axios from "axios";
+
 import {
     AppBar,
     Toolbar,
@@ -13,10 +15,25 @@ import {
     DialogActions,
     TextField,
     Button,
+    Alert,
+    Snackbar,
 } from "@mui/material";
 
 const Navbar = () => {
+    const env = process.env;
+    const baseUrl = env.REACT_APP_BACKEND_API;
+
     const [openAddDialog, setOpenAddDialog] = useState(false);
+
+    const [snackOpen, setSnackOpen] = useState(false);
+    const [snackTitle, setSnackTitle] = useState('');
+    const [snackType, setSnackType] = useState('');
+    const createSnack = (title, type) => {
+        setSnackTitle(title);
+        setSnackType(type);
+
+        setSnackOpen(true);
+    }
 
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState(false);
@@ -30,8 +47,32 @@ const Navbar = () => {
     const [addr, setAddr] = useState('');
     const [addrError, setAddrError] = useState(false);
 
+    const [addLoading, setAddLoading] = useState(false);
+
     const addUser = () => {
-        console.log('user adding');
+        const data = {
+            name,
+            surname,
+            age,
+            addr,
+        }
+
+        setAddLoading(true);
+
+        Axios.post(`${baseUrl}/api/users/add`, data)
+            .then((result) => {
+                setName('');
+                setSurname('');
+                setAddr('');
+                setAge('');
+
+                setAddLoading(false);
+                setOpenAddDialog(false);
+                createSnack('User added', 'success');
+            })
+            .catch((error) => {
+                console.log(error)
+            });
     }
 
     return (
@@ -121,11 +162,18 @@ const Navbar = () => {
                         variant="text"
                         color="primary"
                         onClick={() => addUser()}
+                        disabled={addLoading}
                     >
                         Add
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <Snackbar open={snackOpen} autoHideDuration={6000} onClose={() => setSnackOpen(false)}>
+                <Alert onClose={() => setSnackOpen(false)} severity={snackType}>
+                    {snackTitle}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
