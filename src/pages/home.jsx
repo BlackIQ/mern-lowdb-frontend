@@ -53,7 +53,7 @@ const HomePage = () => {
 
         Axios.post(`${baseUrl}/api/users/del`, data)
             .then((result) => {
-                console.log(result.data)
+                setUsersResult(usersResult.filter(user => user.id !== uid));
 
                 createSnack('User deleted', 'success');
 
