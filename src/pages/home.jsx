@@ -9,17 +9,18 @@ import {
     Card,
     CardHeader,
     CardContent,
+    CardActions,
     Typography,
     TextField,
     List,
     ListItem,
     ListItemButton,
-    ListItemText,
+    ListItemText, Button,
 } from "@mui/material";
 
 import {
     Search,
-    Info
+    Person,
 } from "@mui/icons-material";
 
 const HomePage = () => {
@@ -27,13 +28,15 @@ const HomePage = () => {
     const baseUrl = env.REACT_APP_BACKEND_API;
 
     const [userSearch, setUserSearch] = useState('');
-
     const [usersResult, setUsersResult] = useState([]);
+
+    const [userId, setUserId] = useState('');
+    const [userResult, setUserResult] = useState({});
 
     useEffect(() => {
         if (userSearch === '') setUsersResult([]);
         else {
-            Axios.get(`${baseUrl}/api/users/get/${userSearch}`)
+            Axios.get(`${baseUrl}/api/users/search/${userSearch}`)
                 .then((result) => {
                     setUsersResult(result.data);
                 })
@@ -41,7 +44,19 @@ const HomePage = () => {
                     console.log(error);
                 });
         }
-    }, [userSearch]);
+
+        if (userId === '') setUserId('');
+        else {
+            Axios.get(`${baseUrl}/api/users/get/${userId}`)
+                .then((result) => {
+                    setUserResult(result.data);
+                    console.log(result.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    }, [userSearch, userId]);
 
     return (
         <Box
@@ -110,7 +125,7 @@ const HomePage = () => {
                                             return (
                                                 <ListItem disablePadding>
                                                     <ListItemButton
-                                                        onClick={() => {}}
+                                                        onClick={() => setUserId(user.id)}
                                                     >
                                                         <ListItemText primary={user.name} />
                                                     </ListItemButton>
@@ -123,6 +138,48 @@ const HomePage = () => {
                         </CardContent>
                     </Card>
                 </Grid>
+                {
+                    userId !== ''
+                    &&
+                    <Grid
+                        md={6}
+                        sm={12}
+                        sx={12}
+                        item
+                    >
+                        <Card
+                            variant="outlined"
+                            sx={{
+                                border: "none",
+                                borderRadius: 5,
+                            }}
+                        >
+                            <CardHeader
+                                title="User information"
+                                subheader="Here you can read about username"
+                                avatar={
+                                    <Avatar sx={{ bgcolor: "primary.main" }}>
+                                        <Person />
+                                    </Avatar>
+                                }
+                                sx={{
+                                    color: "primary.main"
+                                }}
+                            />
+                            <CardContent>
+
+                            </CardContent>
+                            <CardActions>
+                                <Button
+                                    variant="text"
+                                    onClick={() => setUserId('')}
+                                >
+                                    Close
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                }
             </Grid>
         </Box>
     );
