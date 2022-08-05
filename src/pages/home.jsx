@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import Axios from "axios";
 
 import {
     Box,
@@ -9,6 +11,10 @@ import {
     CardContent,
     Typography,
     TextField,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
 } from "@mui/material";
 
 import {
@@ -17,12 +23,25 @@ import {
 } from "@mui/icons-material";
 
 const HomePage = () => {
-    const [userSearch, setUserSearch] = useState('');
-    const searchUser = (value) => {
-        setUserSearch(value);
+    const env = process.env;
+    const baseUrl = env.REACT_APP_BACKEND_API;
 
-        console.log(userSearch);
-    }
+    const [userSearch, setUserSearch] = useState('');
+
+    const [usersResult, setUsersResult] = useState([]);
+
+    useEffect(() => {
+        if (userSearch === '') setUsersResult([]);
+        else {
+            Axios.get(`${baseUrl}/api/users/get/${userSearch}`)
+                .then((result) => {
+                    setUsersResult(result.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    }, [userSearch]);
 
     return (
         <Box
@@ -64,13 +83,43 @@ const HomePage = () => {
                                 label="Search user"
                                 placeholder="Enter any data"
                                 color="primary"
+                                margin="normal"
                                 value={userSearch}
-                                onChange={(e) => searchUser(e.target.value)}
+                                onChange={(e) => setUserSearch(e.target.value)}
                                 sx={{
                                     bgcolor: "background.default"
                                 }}
                                 fullWidth
                             />
+                            {
+                                usersResult.length === 0
+                                ?
+                                <Box>
+                                    <br />
+                                    <Typography
+                                        variant="body1"
+                                        color="text.secondary"
+                                    >
+                                        No data is found
+                                    </Typography>
+                                </Box>
+                                :
+                                <List>
+                                    {
+                                        usersResult.map((user) => {
+                                            return (
+                                                <ListItem disablePadding>
+                                                    <ListItemButton
+                                                        onClick={() => {}}
+                                                    >
+                                                        <ListItemText primary={user.name} />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            );
+                                        })
+                                    }
+                                </List>
+                            }
                         </CardContent>
                     </Card>
                 </Grid>
