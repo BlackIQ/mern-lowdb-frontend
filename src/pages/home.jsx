@@ -51,7 +51,7 @@ const HomePage = () => {
             uid
         }
 
-        Axios.post(`${baseUrl}/api/users/del`, data)
+        Axios.delete(`${baseUrl}/api/users/delete`, data)
             .then((result) => {
                 setUsersResult(usersResult.filter(user => user.id !== uid));
 
