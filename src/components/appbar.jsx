@@ -1,3 +1,4 @@
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 
 import Axios from "axios";
@@ -20,6 +21,8 @@ import {
 } from "@mui/material";
 
 const Navbar = () => {
+    const history = useHistory();
+
     const env = process.env;
     const baseUrl = env.REACT_APP_BACKEND_API;
 
@@ -84,8 +87,10 @@ const Navbar = () => {
                     <Toolbar>
                         <Typography
                             variant="h6"
+                            onClick={() => history.push('/')}
                             sx={{
                                 flexGrow: 1,
+                                cursor: "pointer",
                             }}
                         >
                             MERN + LowDB
