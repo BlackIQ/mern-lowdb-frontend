@@ -156,7 +156,7 @@ const HomePage = () => {
                         >
                             <CardHeader
                                 title="User information"
-                                subheader="Here you can read about username"
+                                subheader={`Here you can read about ${userResult.name}`}
                                 avatar={
                                     <Avatar sx={{ bgcolor: "primary.main" }}>
                                         <Person />
@@ -167,7 +167,17 @@ const HomePage = () => {
                                 }}
                             />
                             <CardContent>
-
+                                {
+                                    Object.entries(userResult).map(([key, value]) => {
+                                        return (
+                                            <Typography>
+                                                {key.charAt(0).toUpperCase() + key.slice(1)}
+                                                :&nbsp;
+                                                {value}
+                                            </Typography>
+                                        );
+                                    })
+                                }
                             </CardContent>
                             <CardActions>
                                 <Button
