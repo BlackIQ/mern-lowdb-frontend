@@ -15,7 +15,10 @@ import {
     List,
     ListItem,
     ListItemButton,
-    ListItemText, Button,
+    ListItemText,
+    Button,
+    Alert,
+    Snackbar
 } from "@mui/material";
 
 import {
@@ -27,11 +30,40 @@ const HomePage = () => {
     const env = process.env;
     const baseUrl = env.REACT_APP_BACKEND_API;
 
+    const [snackOpen, setSnackOpen] = useState(false);
+    const [snackTitle, setSnackTitle] = useState('');
+    const [snackType, setSnackType] = useState('');
+    const createSnack = (title, type) => {
+        setSnackTitle(title);
+        setSnackType(type);
+
+        setSnackOpen(true);
+    }
+
     const [userSearch, setUserSearch] = useState('');
     const [usersResult, setUsersResult] = useState([]);
 
     const [userId, setUserId] = useState('');
     const [userResult, setUserResult] = useState({});
+
+    const deleteUser = (uid) => {
+        const data = {
+            uid
+        }
+
+        Axios.post(`${baseUrl}/api/users/del`, data)
+            .then((result) => {
+                console.log(result.data)
+
+                createSnack('User deleted', 'success');
+
+                setUserId('');
+                setUserResult({});
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 
     useEffect(() => {
         if (userSearch === '') setUsersResult([]);
@@ -50,7 +82,6 @@ const HomePage = () => {
             Axios.get(`${baseUrl}/api/users/get/${userId}`)
                 .then((result) => {
                     setUserResult(result.data);
-                    console.log(result.data);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -182,15 +213,29 @@ const HomePage = () => {
                             <CardActions>
                                 <Button
                                     variant="text"
+                                    color="primary"
                                     onClick={() => setUserId('')}
                                 >
                                     Close
+                                </Button>
+                                <Button
+                                    variant="text"
+                                    color="error"
+                                    onClick={() => deleteUser(userResult.id)}
+                                >
+                                    Delete user
                                 </Button>
                             </CardActions>
                         </Card>
                     </Grid>
                 }
             </Grid>
+
+            <Snackbar open={snackOpen} autoHideDuration={6000} onClose={() => setSnackOpen(false)}>
+                <Alert onClose={() => setSnackOpen(false)} severity={snackType}>
+                    {snackTitle}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
