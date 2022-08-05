@@ -1,3 +1,5 @@
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import {
     Container,
     ThemeProvider,
@@ -8,6 +10,7 @@ import {
 } from "@mui/material";
 
 import Navbar from "./components/appbar";
+import HomePage from "./pages/home";
 
 function App() {
     const theme = createTheme({
@@ -25,13 +28,13 @@ function App() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Navbar />
-            <Container>
-                <Typography
-                    variant="h1"
-                >
-                    Hello
-                </Typography>
-            </Container>
+            <Router>
+                <Container>
+                    <Switch>
+                        <Route path={"/"} exact><HomePage /></Route>
+                    </Switch>
+                </Container>
+            </Router>
         </ThemeProvider>
     );
 }
