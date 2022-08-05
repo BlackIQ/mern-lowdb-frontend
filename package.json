@@ -1,6 +1,7 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "mern_lowdb",
+  "version": "1.0.0",
+  "description": "Creating a MERN application with Json file as our database using LowDB.",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.0",
@@ -18,6 +19,14 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlackIQ/mern-lowdb-frontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BlackIQ/mern-lowdb-frontend/issues"
+  },
+  "homepage": "https://github.com/BlackIQ/mern-lowdb-frontend#readme",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
